@@ -57,14 +57,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        SwitchCompat switchNightMode = findViewById(R.id.switch_night_mode);
-        switchNightMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-        });
+        //code ci-dessous = source de bug
     }
 
     @Override
@@ -93,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     private void showSettingsPopup() {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.popup_settings, null);
@@ -102,7 +96,41 @@ public class MainActivity extends AppCompatActivity {
         boolean focusable = true;
         PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
 
+        SwitchCompat switchNightMode = popupView.findViewById(R.id.switch_night_mode);
+        switchNightMode.setChecked(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
+        switchNightMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Fermez le PopupWindow avant de changer le mode nuit
+            popupWindow.dismiss();
+
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        });
+
         // Affichez le PopupWindow sous la barre d'outils
         popupWindow.showAtLocation(findViewById(R.id.toolbar), Gravity.TOP | Gravity.START, 0, getSupportActionBar().getHeight());
     }
+
+//    private void showSettingsPopup() {
+//        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+//        View popupView = inflater.inflate(R.layout.popup_settings, null);
+//        SwitchCompat switchNightMode = popupView.findViewById(R.id.switch_night_mode);
+//        switchNightMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            if (isChecked) {
+//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+//            } else {
+//                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+//            }
+//        });
+//
+//        int width = LinearLayout.LayoutParams.MATCH_PARENT;
+//        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+//        boolean focusable = true;
+//        PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+//
+//        // Affichez le PopupWindow sous la barre d'outils
+//        popupWindow.showAtLocation(findViewById(R.id.toolbar), Gravity.TOP | Gravity.START, 0, getSupportActionBar().getHeight());
+//    }
 }
